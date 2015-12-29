@@ -5,9 +5,10 @@ services:
 node_js:
   - "stable"
 before_script:
+  - npm install -g npm
   - npm install -g gulp bower
-  - npm install
   - bower install
 script:
   - gulp
-  - docker build -t michaelcoll/anim-enfance-front:latest .
+  - docker build -t tutum.co/michaelcoll/anim-enfance-front:latest .
+  - docker push tutum.co/michaelcoll/anim-enfance-front:latest
