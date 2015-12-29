@@ -1,0 +1,28 @@
+# IDE files
+.settings
+.classpath
+.project
+.idea
+*.iml
+
+# Build dirs
+bin
+target
+
+node_modules/
+bower_components/
+coverage/
+.sass-cache/
+.tmp/
+dist/
+
+# Maven dependency tree log
+DT.log
+
+# Sites
+sites
+
+# Other
+*.com
+*.exe
+temp
