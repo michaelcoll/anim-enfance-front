@@ -5,5 +5,6 @@ before_script:
   - npm install -g gulp bower
   - npm install
   - bower install
-script: gulp
-
+script:
+  - gulp
+  - docker build -t michaelcoll/anim-enfance-front:latest .
