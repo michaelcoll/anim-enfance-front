@@ -4,6 +4,8 @@ services:
   - docker
 node_js:
   - "stable"
+notifications:
+  slack: animenfance:5XpEfsL90X6C7qGqEAJ76ZRS
 cache:
   directories:
     - node_modules
