@@ -18,4 +18,4 @@ script:
   - if [[ ! -z "$TRAVIS_TAG" ]]; then docker tag michaelcoll/anim-enfance-front:latest michaelcoll/anim-enfance-front:$TRAVIS_TAG ; fi
 after_success:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push tutum.co/michaelcoll/anim-enfance-front
+  - docker push michaelcoll/anim-enfance-front
