@@ -4,6 +4,10 @@ services:
   - docker
 node_js:
   - "stable"
+cache:
+  directories:
+    - node_modules
+    - bower_components
 before_script:
   - npm install -g npm
   - npm install -g gulp bower
