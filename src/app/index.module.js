@@ -3,6 +3,7 @@
 
   angular
     .module('anim-enfance', [
+      'ngRaven',
       'ngAnimate',
       'ngCookies',
       'ngSanitize',

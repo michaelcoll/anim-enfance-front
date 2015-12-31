@@ -1,6 +1,13 @@
 {
   "name": "anim-enfance",
   "version": "0.1.0",
+  "author": "Michael COLL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michaelcoll/anim-enfance-front.git"
+  },
+  "bugs": "https://github.com/michaelcoll/anim-enfance-front/issues",
+  "license": "MIT",
   "dependencies": {},
   "scripts": {
     "test": "gulp test"
