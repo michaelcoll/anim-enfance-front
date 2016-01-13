@@ -16,8 +16,8 @@ before_script:
   - bower install
 script:
   - gulp
-  - docker build -t michaelcoll/anim-enfance-front:latest .
-  - if [[ ! -z "$TRAVIS_TAG" ]]; then docker tag michaelcoll/anim-enfance-front:latest michaelcoll/anim-enfance-front:$TRAVIS_TAG ; fi
-after_success:
-  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push michaelcoll/anim-enfance-front
+#  - docker build -t michaelcoll/anim-enfance-front:latest .
+#  - if [[ ! -z "$TRAVIS_TAG" ]]; then docker tag michaelcoll/anim-enfance-front:latest michaelcoll/anim-enfance-front:$TRAVIS_TAG ; fi
+#after_success:
+#  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+#  - docker push michaelcoll/anim-enfance-front
