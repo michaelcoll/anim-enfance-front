@@ -7,15 +7,15 @@
 
       <form novalidate @submit.prevent="validateUser">
         <md-dialog-content>
-              <md-field :class="getValidationClass('structureName')">
-                <label for="structure-name">Nom de la structure</label>
-                <md-input name="structure-name" id="structure-name"
-                          v-model="form.structureName" :disabled="sending" />
-                <span class="md-error"
-                      v-if="!$v.form.structureName.required">Un nom est requis</span>
-                <span class="md-error"
-                      v-else-if="!$v.form.structureName.minlength">Nom invalide</span>
-              </md-field>
+          <md-field :class="getValidationClass('structureName')">
+            <label for="structure-name">Nom de la structure</label>
+            <md-input name="structure-name" id="structure-name"
+                      v-model="form.structureName" :disabled="sending"/>
+            <span class="md-error"
+                  v-if="!$v.form.structureName.required">Un nom est requis</span>
+            <span class="md-error"
+                  v-else-if="!$v.form.structureName.minlength">Nom invalide</span>
+          </md-field>
         </md-dialog-content>
 
         <md-dialog-actions>
@@ -44,11 +44,11 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { minLength, required } from 'vuelidate/lib/validators';
+import { save } from '../../services/structureService';
 
 export default {
   name: 'CreateStructure',
   mixins: [validationMixin],
-  props: ['on-close', 'on-save'],
   data: () => ({
     showDialog: false,
     form: {
@@ -83,15 +83,14 @@ export default {
     },
     saveUser() {
       this.sending = true;
+      this.lastStructure = `${this.form.structureName}`;
 
-      // Instead of this timeout, here you can call your API
-      window.setTimeout(() => {
-        this.lastStructure = `${this.form.structureName}`;
-        this.structureSaved = true;
-        this.sending = false;
-        this.clearForm();
-        this.onSave(this.lastStructure);
-      }, 1500);
+      const vm = this;
+
+      save({ name: this.lastStructure })
+        .then((response) => {
+          vm.onSave(response.data);
+        });
     },
     validateUser() {
       this.$v.$touch();
@@ -100,14 +99,19 @@ export default {
         this.saveUser();
       }
     },
+    onSave(structure) {
+      this.structureSaved = true;
+      this.sending = false;
+      this.clearForm();
+      this.$emit('on-save', structure);
+    },
     onCloseDialog() {
       this.showDialog = false;
-      this.onClose();
+      this.$emit('on-close');
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>

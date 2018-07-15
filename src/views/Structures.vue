@@ -9,45 +9,34 @@
         <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
       </md-table-row>
     </md-table>
-
-    <CreateStructure on-save="onStructureCreate()"/>
+    <CreateStructure v-on:on-save="onStructureCreate"/>
   </div>
 </template>
 
 <script>
+import { list } from '../services/structureService';
 import CreateStructure from '../components/structure/CreateStructure.vue';
 
 export default {
   name: 'Structures',
   components: { CreateStructure },
   data: () => ({
-    structures: [
-      {
-        id: 1,
-        name: 'Shawna Dubbin',
-      },
-      {
-        id: 2,
-        name: 'Odette Demageard',
-      },
-      {
-        id: 3,
-        name: 'Lonnie Izkovitz',
-      },
-      {
-        id: 4,
-        name: 'Thatcher Stave',
-      },
-      {
-        id: 5,
-        name: 'Clarinda Marieton',
-      },
-    ],
+    structures: [],
   }),
+  mounted() {
+    list()
+      .then((response) => {
+        this.structures = response.data;
+      });
+  },
   methods: {
-    onStructureCreate(newStructure) {
-      this.structures.push({ id: -1, name: newStructure });
+    onStructureCreate() {
+      list()
+        .then((response) => {
+          this.structures = response.data;
+        });
     },
+
   },
 };
 </script>
