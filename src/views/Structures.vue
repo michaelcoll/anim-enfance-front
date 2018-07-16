@@ -1,14 +1,40 @@
 <template>
   <div>
-    <md-table v-model="structures" md-sort="name" md-sort-order="asc" md-card>
-      <md-table-toolbar>
-        <h1 class="md-title">Structures</h1>
-      </md-table-toolbar>
-
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-      </md-table-row>
-    </md-table>
+    <v-content>
+      <v-container fluid>
+        <v-data-table
+          :headers="headers"
+          :items="structures"
+          hide-actions
+          class="elevation-1"
+        >
+          <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+          <template slot="items" slot-scope="props">
+            <td>{{ props.item.name }}</td>
+            <td class="justify-center layout px-0">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(props.item)"
+              >
+                edit
+              </v-icon>
+              <v-icon
+                small
+                @click="deleteItem(props.item)"
+              >
+                delete
+              </v-icon>
+            </td>
+          </template>
+          <template slot="no-data">
+            <v-alert :value="true" color="info" icon="info">
+              Sorry, nothing to display here :(
+            </v-alert>
+          </template>
+        </v-data-table>
+      </v-container>
+    </v-content>
     <CreateStructure v-on:on-save="onStructureCreate"/>
   </div>
 </template>
@@ -18,9 +44,17 @@ import { list } from '../services/structureService';
 import CreateStructure from '../components/structure/CreateStructure.vue';
 
 export default {
-  name: 'Structures',
   components: { CreateStructure },
   data: () => ({
+    headers: [
+      {
+        text: 'Nom',
+        align: 'left',
+        sortable: true,
+        value: 'name',
+      },
+      { text: 'Actions', value: 'name', sortable: false },
+    ],
     structures: [],
   }),
   mounted() {

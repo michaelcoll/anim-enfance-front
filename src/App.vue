@@ -1,50 +1,37 @@
 <template>
-  <div class="page-container">
-    <md-app md-mode="reveal">
-      <md-app-toolbar class="md-primary">
-        <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
-          <md-icon>menu</md-icon>
-        </md-button>
-        <span class="md-title">Animenfance</span>
-      </md-app-toolbar>
-      <md-app-drawer :md-active.sync="menuVisible">
-        <md-toolbar class="md-transparent" md-elevation="0">Navigation</md-toolbar>
+  <v-app>
+    <v-navigation-drawer
+      permanent
+      width="200"
+      :mini-variant="miniVariant"
+      enable-resize-watcher
+      clipped
+      app
+      dark
+    >
+      <v-list dense>
+        <v-list-tile
+          v-for="item in items"
+          :key="item.title"
+          :to="item.action"
+          ripple>
+          <v-list-tile-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-tile-action>
 
-        <md-list>
-          <router-link to="/creche">
-            <md-ripple>
-              <md-list-item>
-                <md-icon>child_care</md-icon>
-                <span class="md-list-item-text">Cr&egrave;che</span>
-              </md-list-item>
-            </md-ripple>
-          </router-link>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar dark app fixed clipped-left>
+      <v-toolbar-side-icon @click.stop="miniVariant = !miniVariant"></v-toolbar-side-icon>
+      <v-toolbar-title>AnimEnfance</v-toolbar-title>
+    </v-toolbar>
 
-          <router-link to="/partenaire">
-            <md-ripple>
-              <md-list-item>
-                <md-icon>people</md-icon>
-                <span class="md-list-item-text">Partenaires</span>
-              </md-list-item>
-            </md-ripple>
-          </router-link>
-
-          <router-link to="/events">
-            <md-ripple>
-              <md-list-item>
-                <md-icon>event</md-icon>
-                <span class="md-list-item-text">R&eacute;servation</span>
-              </md-list-item>
-            </md-ripple>
-          </router-link>
-        </md-list>
-      </md-app-drawer>
-
-      <md-app-content>
-        <router-view/>
-      </md-app-content>
-    </md-app>
-  </div>
+    <router-view/>
+  </v-app>
 </template>
 
 <style lang="scss" scoped>
@@ -52,10 +39,19 @@
 
 <script>
 export default {
-  name: 'Reveal',
-  data: () => ({
-    menuVisible: false,
-  }),
+  data() {
+    return {
+      items: [
+        { title: 'Crèche', icon: 'child_care', action: '/structure' },
+        { title: 'Partenaires', icon: 'people', action: '/partner' },
+        { title: 'Réservation', icon: 'event', action: '/events' },
+      ],
+      clipped: false,
+      drawer: true,
+      fixed: false,
+      miniVariant: true,
+    };
+  },
 };
 </script>
 

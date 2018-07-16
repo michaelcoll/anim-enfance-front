@@ -1,108 +1,84 @@
 <template>
   <div>
-    <md-dialog :md-active.sync="showDialog">
-      <md-progress-bar md-mode="indeterminate" v-if="sending"/>
+    <v-dialog v-model="showDialog" persistent max-width="300px">
+      <v-card>
+        <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
+        <v-card-title>
+          <span class="headline">Nouvelle structure</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-form ref="form" v-model="valid" lazy-validation>
+                <v-text-field
+                  v-model="name"
+                  :rules="nameRules"
+                  label="Nom"
+                  required
+                ></v-text-field>
+              </v-form>
+            </v-layout>
+          </v-container>
+        </v-card-text>
 
-      <md-dialog-title>Nouvelle structure</md-dialog-title>
+        <v-divider></v-divider>
 
-      <form novalidate @submit.prevent="validateUser">
-        <md-dialog-content>
-          <md-field :class="getValidationClass('structureName')">
-            <label for="structure-name">Nom de la structure</label>
-            <md-input name="structure-name" id="structure-name"
-                      v-model="form.structureName" :disabled="sending"/>
-            <span class="md-error"
-                  v-if="!$v.form.structureName.required">Un nom est requis</span>
-            <span class="md-error"
-                  v-else-if="!$v.form.structureName.minlength">Nom invalide</span>
-          </md-field>
-        </md-dialog-content>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="onCloseDialog()">Fermer</v-btn>
+          <v-btn color="primary" @click="submit" :disabled="sending">Ajouter</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-        <md-dialog-actions>
-          <md-button @click="onCloseDialog()">Fermer</md-button>
-          <md-button class="md-primary" type="submit"
-                     :disabled="sending">Ajouter
-          </md-button>
-        </md-dialog-actions>
-      </form>
+    <v-btn fab bottom right fixed color="primary" @click.stop="showDialog = true">
+      <v-icon>add</v-icon>
+    </v-btn>
 
-    </md-dialog>
-
-    <div class="md-layout md-alignment-bottom-right">
-      <md-button class="md-primary md-fab" @click="showDialog = true">
-        <md-icon>add</md-icon>
-      </md-button>
-    </div>
-
-    <md-snackbar :md-active.sync="structureSaved">
-      La structure <strong>{{ lastStructure }}</strong> a été créée avec succès !
-    </md-snackbar>
+    <v-snackbar v-model="structureSaved" bottom>
+      La structure &nbsp; <strong>{{ lastStructure }}</strong> &nbsp; a été créée avec succès !
+    </v-snackbar>
 
   </div>
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { minLength, required } from 'vuelidate/lib/validators';
 import { save } from '../../services/structureService';
 
 export default {
-  name: 'CreateStructure',
-  mixins: [validationMixin],
   data: () => ({
     showDialog: false,
-    form: {
-      structureName: null,
-    },
+    valid: true,
+    name: '',
+    nameRules: [
+      v => !!v || 'Un nom est requis',
+      v => (v && v.length >= 3) || 'Nom invalide',
+    ],
     structureSaved: false,
     sending: false,
     lastStructure: null,
   }),
-  validations: {
-    form: {
-      structureName: {
-        required,
-        minLength: minLength(3),
-      },
-    },
-  },
   methods: {
-    getValidationClass(fieldName) {
-      const field = this.$v.form[fieldName];
+    submit() {
+      if (this.$refs.form.validate()) {
+        this.sending = true;
+        this.lastStructure = this.name;
 
-      if (field) {
-        return {
-          'md-invalid': field.$invalid && field.$dirty,
-        };
+        const vm = this;
+
+        save({ name: this.name })
+          .then((response) => {
+            vm.onSave(response.data);
+          });
       }
-      return null;
     },
-    clearForm() {
-      this.$v.$reset();
-      this.form.structureName = null;
-    },
-    saveUser() {
-      this.sending = true;
-      this.lastStructure = `${this.form.structureName}`;
-
-      const vm = this;
-
-      save({ name: this.lastStructure })
-        .then((response) => {
-          vm.onSave(response.data);
-        });
-    },
-    validateUser() {
-      this.$v.$touch();
-
-      if (!this.$v.$invalid) {
-        this.saveUser();
-      }
+    clear() {
+      this.$refs.form.reset();
     },
     onSave(structure) {
       this.structureSaved = true;
       this.sending = false;
-      this.clearForm();
+      this.clear();
       this.$emit('on-save', structure);
     },
     onCloseDialog() {
